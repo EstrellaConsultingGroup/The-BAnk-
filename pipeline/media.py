@@ -108,6 +108,8 @@ def contact_sheet(frames: list[Path], dest: Path, cols: int = 4) -> Path | None:
 # ------------------------------------------------------------------ captions
 @lru_cache
 def _whisper(model: str):
+    import os
+    os.environ.setdefault("HF_HUB_DISABLE_XET", "1")  # plain HTTPS download; no extra Xet storage hosts needed
     from faster_whisper import WhisperModel
     return WhisperModel(model, device="auto", compute_type="int8")
 
