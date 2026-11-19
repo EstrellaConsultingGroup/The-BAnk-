@@ -1,0 +1,20 @@
+# Secrets
+.env
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+
+# Heavy / re-creatable media (state/, history/, reports/, outliers.csv and the .md files ARE committed
+# so a fresh container picks up where the last run stopped)
+data/
+refs/
+review/
+out/**/*.mp4
+out/**/*.wav
+out/**/*.ass
+out/**/tmp/
+*.mkv
+*.webm

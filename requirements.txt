@@ -1,0 +1,8 @@
+pyyaml>=6
+requests>=2.31
+numpy>=1.26
+pillow>=10
+yt-dlp>=2025.1.1
+scenedetect[opencv-headless]>=0.6.4
+faster-whisper>=1.1
+pytest>=8

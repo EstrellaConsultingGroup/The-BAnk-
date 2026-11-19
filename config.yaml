@@ -1,0 +1,103 @@
+# GTA 6 channel pipeline — main config.
+# Secrets never go here. They live in .env (see .env.example and CONNECT.md).
+
+channel:
+  name: "YOUR CHANNEL NAME"          # used in descriptions and as the Upload-Post profile fallback
+  youtube_url: ""                    # your channel URL, for `python -m pipeline metrics`
+  game_name: "Grand Theft Auto VI"   # exact Twitch category name
+  search_terms: ["gta 6", "gta vi", "gta 6 gameplay", "gta 6 funny moments", "gta 6 best clips"]
+  language: en
+
+# ---- Safety gates (prompt 1: "until i say otherwise, post only what i approve") ----
+gates:
+  require_gauntlet_pass: true        # a fresh agent must say YES before anything is approvable
+  require_human_approval: true       # flip to false ONLY when the owner says so in chat
+  dry_run: true                      # publish prints what it would do; set false once connections work
+
+# ---- Rights (added: keeps the channel from getting copyright strikes) ----
+rights:
+  # Only clips from streamers listed in streamers.yaml with permission campaign|written are rendered.
+  # Clips from everyone else are still listed in the daily CSV (status=needs_permission) so you can ask.
+  require_permission: true
+
+# ---- Prompt 2: outliers ----
+outliers:
+  videos_per_channel: 30
+  min_age_hours: 48          # ignore videos too young to judge
+  max_age_days: 120          # only recent videos count
+  min_ratio: 3.0             # views / channel median >= this = outlier
+  min_views: 10000
+
+# ---- Prompt 4: clips ----
+clips:
+  lookback_hours: 24
+  per_source_limit: 100
+  keep_top: 25
+  min_duration_s: 6
+  max_duration_s: 90
+  # prompt 4: skip cutscenes, endings and exploits. Matched against title/caption (case-insensitive).
+  blocklist: ["cutscene", "cut scene", "ending", "final mission", "last mission", "credits",
+              "spoiler", "story mission", "exploit", "glitch", "money glitch", "dupe", "duplication",
+              "mod menu", "modded", "hack", "leak", "leaked", "cheat"]
+  letterbox_check: true      # flag clips with cinematic black bars (likely cutscenes) for review
+
+# ---- Prompt 5: episode ----
+episode:
+  default_target_s: 600      # used until outliers.csv has enough compilation outliers
+  min_clips: 6
+  resolution: [1920, 1080]
+  fps: 30
+  label_font: "assets/fonts/Inter-Black.otf"
+  loudness_lufs: -14
+
+# ---- Prompt 6: verticals ----
+vertical:
+  size: [1080, 1920]
+  max_duration_s: 59
+  hook_mode: teaser          # teaser = flash the payoff first, then play the clip; trim = start just before payoff
+  teaser_s: 1.6
+  caption_font: "Inter Black"
+  caption_size: 118
+  # Captions sit between the facecam and the gameplay: clear of TikTok/IG/Shorts buttons
+  # (right ~180px, bottom ~420px, top ~160px).
+  safe_right_px: 180
+  safe_bottom_px: 420
+  safe_top_px: 160
+  whisper_model: small       # tiny|base|small|medium|large-v3 (faster-whisper)
+
+# ---- Prompt 3: thumbnails ----
+thumbnails:
+  provider: openai           # openai (gpt-image) | gemini (nano banana pro) | frame (no AI: real gameplay frame)
+  openai_model: gpt-image-1
+  gemini_model: gemini-3-pro-image-preview
+  candidates: 3
+  title_candidates: 5
+  font: "assets/fonts/Inter-Black.otf"
+
+# ---- Apify actors (prompt 2 & 4). Verify ids in the Apify Store; swap freely. ----
+apify:
+  youtube_channel_actor: "streamers/youtube-channel-scraper"
+  youtube_search_actor: "streamers/youtube-scraper"
+  tiktok_actor: "clockworks/tiktok-scraper"
+  twitch_clips_actor: ""     # leave empty to use the free official Twitch API (needs TWITCH_CLIENT_ID/SECRET)
+  kick_clips_actor: ""       # set an Apify Kick clips actor id to enable Kick
+  tiktok_hashtags: ["gta6", "gtavi", "gta6clips"]
+
+# ---- Prompt 9: publishing ----
+publish:
+  routes:                    # which service posts to which platform
+    youtube: composio
+    instagram: composio      # switch to upload_post if Composio's Instagram tool needs a public URL
+    tiktok: upload_post
+  composio_user_id: "default"
+  composio_tools:            # verify with: python -m pipeline composio-tools youtube
+    youtube_upload: "YOUTUBE_UPLOAD_VIDEO"
+    youtube_thumbnail: "YOUTUBE_UPDATE_THUMBNAIL"
+    instagram_reel: "INSTAGRAM_CREATE_REEL"
+  youtube_privacy: public    # public | unlisted | private
+  youtube_category_id: "20"  # Gaming
+  schedule:                  # local times (24h). "publish due" only posts into an open slot.
+    timezone: "America/New_York"
+    episode: ["17:00"]
+    own_video: ["12:00"]
+    vertical: ["09:00", "13:00", "19:00", "22:00"]

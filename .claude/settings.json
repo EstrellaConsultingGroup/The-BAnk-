@@ -1,0 +1,29 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd \"$CLAUDE_PROJECT_DIR\" && echo '=== RULES.md (read first, every run) ===' && cat RULES.md && echo && echo '=== STATUS.md ===' && cat STATUS.md && (command -v ffmpeg >/dev/null && command -v yt-dlp >/dev/null || echo 'NOTE: tools missing in this container - run ./setup.sh first')"
+          }
+        ]
+      }
+    ]
+  },
+  "permissions": {
+    "allow": [
+      "Bash(python -m pipeline doctor)",
+      "Bash(python -m pipeline status)",
+      "Bash(python -m pipeline items:*)",
+      "Bash(python -m pipeline clips)",
+      "Bash(python -m pipeline outliers)",
+      "Bash(python -m pipeline gauntlet:*)",
+      "Bash(python -m pytest:*)"
+    ],
+    "deny": [
+      "Read(.env)",
+      "Bash(cat .env*)"
+    ]
+  }
+}

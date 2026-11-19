@@ -1,0 +1,27 @@
+# Streamers you clip. This file is the rights gate: with rights.require_permission=true,
+# only streamers marked campaign or written get rendered and posted.
+#
+# permission:
+#   campaign  -> they run a paid clipping campaign (Whop Content Rewards, Vyro, etc.). Clip freely within its rules.
+#   written   -> they told you in writing you may clip them. Keep the proof link in `proof`.
+#   none      -> not cleared. Clips are listed but never rendered.
+#
+# facecam: where their webcam sits in a 16:9 frame, as fractions (x, y, w, h).
+#          Leave it out if they have no facecam; the vertical uses a blurred-background layout instead.
+
+streamers:
+  - handle: example_streamer
+    display: "Example Streamer"
+    permission: none
+    proof: ""
+    links:
+      twitch: "https://twitch.tv/example_streamer"
+      youtube: ""
+      tiktok: ""
+      kick: ""
+    facecam: {x: 0.0, y: 0.0, w: 0.25, h: 0.28}
+    campaign:
+      name: ""
+      url: ""                # where you submit posted clips
+      rules: ""              # e.g. "must tag @handle, #ad, min 15s"
+      disclosure: ""         # e.g. "#ad" — appended to vertical captions when set
