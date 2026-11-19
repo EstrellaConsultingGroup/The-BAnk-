@@ -45,6 +45,11 @@ Thumbnails and titles are judged as a `packaging` item (`<id>-pack`); the gauntl
 Never ask for a key in chat. Tell the owner exactly what to click (CONNECT.md) and which `.env` line to
 fill. `python -m pipeline connect youtube` prints a Composio link for them to click.
 
+## Dashboard
+
+The owner may use `python -m pipeline dashboard` (localhost). Approvals clicked there are the owner's own
+approvals. Items approved in the dashboard show up as `approved` in the ledger — treat them exactly like chat approvals.
+
 ## House rules for you
 
 - Run `python -m pipeline status` at the end of every run and tell the owner what changed in 5 lines or less.

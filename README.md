@@ -25,6 +25,20 @@ An agent team that runs a GTA 6 channel on YouTube, TikTok and Instagram, built 
 /weekly                         # refresh outliers + learnings
 ```
 
+### Dashboard
+
+```bash
+python -m pipeline dashboard          # http://127.0.0.1:8787
+```
+
+A GTA-themed control panel ("Vice Ops HQ"): a mission board with one card per prompt (run buttons +
+copyable slash commands), the Garage (every item by stage, video preview, one-click **Approve** for
+you), Hot Clips, Intel (outliers), Crew (approve channels, streamers needing permission), Payday
+(schedule, posted links, campaign submissions) and the Rulebook (gauntlet verdicts). Command output
+streams into the "phone" console. It only listens on localhost, runs a fixed list of pipeline
+commands, and needs a per-launch token for every action. Judgement work (labels, thumbnail study, the
+gauntlet judge) still happens in Claude Code.
+
 Run `/daily` and `/weekly` on a schedule (Claude Code scheduled tasks or cron with `claude -p "/daily"`).
 
 ## What's here

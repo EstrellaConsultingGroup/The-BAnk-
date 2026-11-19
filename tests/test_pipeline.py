@@ -78,3 +78,12 @@ def test_gates_block_until_gauntlet_and_owner(temp_ledger):
     assert "try 1 · **NO**" in rules and "try 2 · **YES**" in rules
     ledger.register("x", "vertical", temp_ledger)  # re-render
     assert ledger.get("x")["status"] == "draft" and "approved_at" not in ledger.get("x")
+
+
+def test_dashboard_whitelist():
+    from pipeline import dashboard
+    with pytest.raises(ValueError):
+        dashboard.start_job("rm -rf /", {})
+    with pytest.raises(ValueError):
+        dashboard.ACTIONS["gauntlet"]({"item": "x; rm -rf ~"})
+    assert dashboard.ACTIONS["verticals"]({"top": 999}) == ["verticals", "--top", "20"]

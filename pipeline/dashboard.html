@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vice Ops HQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;600;800&family=Yellowtail&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0b0614; --bg2:#140a24; --panel:rgba(20,10,36,.82); --line:rgba(255,255,255,.09);
+  --pink:#ff3fa4; --hot:#ff6b3d; --sun:#ffb347; --teal:#22e1d6; --violet:#9b5cff; --money:#6bff8a;
+  --text:#f4eefc; --dim:#a597c2; --bad:#ff4d5e; --warn:#ffcf3f;
+  --head:'Anton',Impact,'Arial Narrow',sans-serif; --body:'Inter',system-ui,sans-serif; --mono:'JetBrains Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 var(--body)}
+body{min-height:100vh;overflow-x:hidden;
+  background:
+    radial-gradient(1200px 500px at 70% -10%, rgba(255,107,61,.28), transparent 60%),
+    radial-gradient(900px 500px at 10% 0%, rgba(155,92,255,.30), transparent 60%),
+    linear-gradient(180deg,#1a0b2e 0%, #0b0614 55%);
+  background-attachment:fixed}
+a{color:var(--teal)}
+button{font:inherit;cursor:pointer}
+
+/* ---------- top bar ---------- */
+header{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:18px;padding:12px 22px;
+  background:linear-gradient(180deg,rgba(11,6,20,.96),rgba(11,6,20,.75));backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.logo{display:flex;align-items:baseline;gap:10px;white-space:nowrap}
+.logo .script{font-family:'Yellowtail',cursive;font-size:34px;color:var(--pink);
+  text-shadow:0 0 6px var(--pink),0 0 22px rgba(255,63,164,.7)}
+.logo .block{font-family:var(--head);font-size:22px;letter-spacing:2px;color:var(--teal);text-shadow:0 0 12px rgba(34,225,214,.6)}
+.logo small{color:var(--dim);font-size:12px;margin-left:6px}
+.hud{margin-left:auto;display:flex;align-items:center;gap:22px}
+.cash{font-family:var(--head);font-size:30px;color:var(--money);letter-spacing:1px;
+  text-shadow:2px 2px 0 #072b10,0 0 14px rgba(107,255,138,.35)}
+.cash small{font-family:var(--body);font-size:11px;color:var(--dim);display:block;text-align:right;letter-spacing:0}
+.stars{display:flex;gap:3px}
+.star{width:22px;height:22px;clip-path:polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);
+  background:#3a2f4d}
+.star.on{background:var(--warn);filter:drop-shadow(0 0 4px var(--warn));animation:blink 1.4s infinite}
+@keyframes blink{50%{opacity:.45}}
+.clock{font-family:var(--mono);color:var(--dim);font-size:13px}
+.gatepills{display:flex;gap:6px;flex-wrap:wrap}
+.pill{font-size:11px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;padding:4px 9px;border-radius:999px;border:1px solid var(--line)}
+.pill.on{color:var(--money);border-color:rgba(107,255,138,.4);background:rgba(107,255,138,.08)}
+.pill.off{color:var(--bad);border-color:rgba(255,77,94,.4);background:rgba(255,77,94,.08)}
+.pill.dry{color:var(--warn);border-color:rgba(255,207,63,.4);background:rgba(255,207,63,.08)}
+
+/* ---------- layout ---------- */
+nav{display:flex;gap:4px;padding:10px 22px 0;flex-wrap:wrap}
+nav button{background:none;border:0;color:var(--dim);font-family:var(--head);font-size:19px;letter-spacing:1.5px;
+  padding:8px 14px;border-bottom:3px solid transparent;text-transform:uppercase}
+nav button:hover{color:var(--text)}
+nav button.active{color:var(--text);border-color:var(--pink);text-shadow:0 0 12px rgba(255,63,164,.6)}
+nav .badge{font-family:var(--body);font-size:11px;background:var(--pink);color:#fff;border-radius:999px;padding:1px 7px;margin-left:6px;vertical-align:3px}
+main{padding:18px 22px 220px;max-width:1500px;margin:0 auto}
+section{display:none} section.active{display:block;animation:fade .25s}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}}
+h2{font-family:var(--head);font-weight:400;font-size:30px;letter-spacing:1.5px;margin:6px 0 4px;text-transform:uppercase}
+h2 .accent{color:var(--sun)}
+.sub{color:var(--dim);margin:0 0 16px}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(290px,1fr))}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;position:relative;overflow:hidden}
+.card h3{margin:0 0 6px;font-family:var(--head);font-weight:400;font-size:21px;letter-spacing:1px}
+.card p{margin:0 0 12px;color:var(--dim)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+
+/* mission cards */
+.mission{border-left:4px solid var(--c,var(--pink))}
+.mission .num{position:absolute;right:10px;top:-8px;font-family:var(--head);font-size:76px;color:var(--c,var(--pink));opacity:.13}
+.mission .agent{font-family:var(--mono);font-size:11px;color:var(--c,var(--pink));letter-spacing:.5px;text-transform:uppercase}
+.btn{border:0;border-radius:8px;padding:8px 13px;font-weight:800;font-size:12px;letter-spacing:.6px;text-transform:uppercase;
+  background:linear-gradient(135deg,var(--pink),var(--hot));color:#fff;box-shadow:0 4px 16px rgba(255,63,164,.25)}
+.btn:hover{filter:brightness(1.12)} .btn:disabled{opacity:.35;cursor:not-allowed;filter:none}
+.btn.ghost{background:rgba(255,255,255,.06);box-shadow:none;border:1px solid var(--line);color:var(--text)}
+.btn.teal{background:linear-gradient(135deg,#14b8ae,var(--teal));color:#05201e}
+.btn.green{background:linear-gradient(135deg,#2fbf55,var(--money));color:#06240f}
+.cmd{font-family:var(--mono);font-size:12px;background:rgba(0,0,0,.35);border:1px dashed rgba(255,255,255,.15);
+  border-radius:6px;padding:5px 8px;color:var(--sun);cursor:pointer}
+.cmd:hover{border-color:var(--sun)}
+input,select{background:rgba(0,0,0,.35);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:7px 9px;font:inherit;font-size:13px}
+
+/* tables */
+.tablewrap{overflow-x:auto;border-radius:12px;border:1px solid var(--line);background:var(--panel)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{font-family:var(--head);font-weight:400;letter-spacing:1px;text-transform:uppercase;color:var(--dim);text-align:left;
+  padding:10px 12px;border-bottom:1px solid var(--line);white-space:nowrap;font-size:14px}
+td{padding:9px 12px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:top}
+tr:hover td{background:rgba(255,255,255,.025)}
+.num-cell{font-family:var(--mono);text-align:right;white-space:nowrap}
+.tag{display:inline-block;font-size:11px;font-weight:800;padding:2px 8px;border-radius:5px;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap}
+.s-draft{background:#2d2440;color:#cbbfe6} .s-gauntlet_fail{background:rgba(255,77,94,.15);color:var(--bad)}
+.s-gauntlet_pass{background:rgba(255,207,63,.15);color:var(--warn)} .s-approved{background:rgba(34,225,214,.15);color:var(--teal)}
+.s-posted{background:rgba(107,255,138,.15);color:var(--money)}
+.src-twitch{color:#b88cff} .src-kick{color:#53fc18} .src-tiktok{color:#ff5c8a}
+.empty{padding:28px;text-align:center;color:var(--dim);border:1px dashed var(--line);border-radius:12px}
+
+/* garage (queue) */
+.lanes{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:14px}
+.lane h3{font-family:var(--head);font-weight:400;letter-spacing:1px;font-size:18px;margin:0 0 10px;display:flex;justify-content:space-between}
+.item{background:rgba(0,0,0,.28);border:1px solid var(--line);border-radius:10px;padding:10px;margin-bottom:10px}
+.item .thumb{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:7px;background:#000;display:block;margin-bottom:8px}
+.item .thumb.v{aspect-ratio:9/16;max-height:260px;object-fit:contain}
+.item .t{font-weight:700;margin-bottom:3px} .item .meta{font-size:12px;color:var(--dim)}
+.faults{font-size:12px;color:#ffb0b8;margin:6px 0 0;padding-left:16px}
+
+/* intel */
+.ratio{font-family:var(--head);font-size:18px;color:var(--sun)}
+.refimg{width:120px;aspect-ratio:16/9;object-fit:cover;border-radius:5px;display:block}
+
+/* phone console */
+#phone{position:fixed;right:18px;bottom:18px;width:min(460px,calc(100vw - 36px));z-index:30;
+  background:#0d0a14;border:2px solid #2a2240;border-radius:22px;box-shadow:0 18px 60px rgba(0,0,0,.6),0 0 0 6px #17121f;overflow:hidden}
+#phone .bar{display:flex;align-items:center;gap:10px;padding:10px 14px;background:linear-gradient(90deg,#1d1530,#26183c);cursor:pointer}
+#phone .bar b{font-family:var(--head);font-weight:400;letter-spacing:1px;font-size:16px}
+#phone .dot{width:8px;height:8px;border-radius:50%;background:var(--dim)} #phone .dot.run{background:var(--warn);animation:blink .8s infinite}
+#phone .bar span{margin-left:auto;color:var(--dim);font-size:12px}
+#phone pre{margin:0;max-height:260px;overflow:auto;padding:12px 14px;font:12px/1.5 var(--mono);color:#d8ffe0;white-space:pre-wrap;background:#07050b}
+#phone.min pre,#phone.min .jobs{display:none}
+#phone .jobs{display:flex;gap:6px;overflow-x:auto;padding:8px 10px;border-top:1px solid #221b30}
+#phone .jobs button{flex:none;background:#1a1426;border:1px solid #2c2340;color:var(--dim);border-radius:7px;padding:4px 8px;font-size:11px;font-family:var(--mono)}
+#phone .jobs button.sel{color:var(--text);border-color:var(--pink)}
+
+/* mission passed banner */
+#banner{position:fixed;inset:0;display:none;place-items:center;z-index:50;pointer-events:none;background:radial-gradient(closest-side,rgba(0,0,0,.55),transparent)}
+#banner.show{display:grid;animation:bn 2.6s forwards}
+#banner div{text-align:center}
+#banner .big{font-family:var(--head);font-size:clamp(46px,9vw,110px);letter-spacing:3px;color:var(--sun);
+  text-shadow:4px 4px 0 #000,0 0 30px rgba(255,179,71,.6);line-height:1}
+#banner.fail .big{color:var(--bad);text-shadow:4px 4px 0 #000,0 0 30px rgba(255,77,94,.6)}
+#banner .small{font-family:var(--head);font-size:26px;letter-spacing:2px;color:#fff;text-shadow:2px 2px 0 #000;margin-top:8px}
+@keyframes bn{0%{opacity:0;transform:scale(1.4)}12%{opacity:1;transform:scale(1)}80%{opacity:1}100%{opacity:0}}
+
+/* modal */
+#modal{position:fixed;inset:0;background:rgba(5,2,10,.86);display:none;place-items:center;z-index:40;padding:20px}
+#modal.show{display:grid}
+#modal .box{background:var(--bg2);border:1px solid var(--line);border-radius:16px;max-width:min(1100px,96vw);max-height:92vh;overflow:auto;padding:18px}
+#modal video,#modal img{max-width:100%;max-height:72vh;display:block;margin:0 auto;border-radius:8px}
+#modal pre{white-space:pre-wrap;font:13px/1.55 var(--mono);color:#e7defa;margin:0}
+
+/* skyline */
+.skyline{position:fixed;left:0;right:0;bottom:0;height:150px;pointer-events:none;z-index:0;opacity:.9}
+main,header,nav{position:relative;z-index:1}
+.toast{position:fixed;left:50%;top:76px;transform:translateX(-50%);background:#1d1530;border:1px solid var(--pink);padding:10px 16px;
+  border-radius:10px;z-index:60;display:none;max-width:90vw}
+.toast.show{display:block;animation:fade .2s}
+.check{display:flex;gap:8px;align-items:center;padding:4px 0;font-size:13px}
+.check i{width:10px;height:10px;border-radius:50%;background:var(--bad);flex:none} .check i.ok{background:var(--money)} .check i.opt{background:#4a3f60}
+@media (max-width:720px){header{flex-wrap:wrap;padding:10px 16px}.hud{margin-left:0;width:100%;justify-content:space-between}
+  main{padding:14px 16px 200px} nav{padding:8px 16px 0} nav button{font-size:16px;padding:6px 9px}}
+</style>
+</head>
+<body>
+<svg class="skyline" viewBox="0 0 1440 150" preserveAspectRatio="none" aria-hidden="true">
+  <defs><linearGradient id="sg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#ff3fa4" stop-opacity=".18"/><stop offset="1" stop-color="#0b0614" stop-opacity="1"/></linearGradient></defs>
+  <rect x="0" y="0" width="1440" height="150" fill="url(#sg)" opacity=".4"/>
+  <path fill="#07040d" d="M0 150V112h40v-20h30v26h22V70h34v48h26V96h40v22h30V58h18v-14h12v14h20v60h24v-34h46v34h20V88h28v30h34V50h40v68h22V100h36v18h26V78h30v40h18V64h14v-18h10v18h18v54h26V92h44v26h30V76h36v42h22V104h40v14h24V60h46v58h20V86h30v32h32V70h22v-12h14v12h20v48h28V96h40v22h26V82h36v36h18V100h30v18h28V74h40v44h22V92h34v26h40V66h30v52h30v32z"/>
+  <g fill="#07040d">
+    <path d="M128 150c2-30 4-52 10-74l3 1c-5 22-7 44-8 73z"/><path d="M139 78c-12-6-26-4-36 4 12-3 24-2 34 4-14 0-24 6-30 14 10-6 22-9 33-7-7 6-11 14-12 22 6-8 13-14 21-17 4 6 6 14 6 22 3-9 2-18-1-26 9 2 17 7 22 14-2-10-9-18-18-22 10-2 21 0 29 6-6-10-18-15-29-14 7-6 17-9 26-8-11-6-24-3-33 4l-12 0z"/>
+    <path d="M1290 150c3-34 6-58 14-82l3 1c-7 24-10 48-11 81z"/><path d="M1305 70c-12-7-27-6-38 2 13-2 25 0 35 6-15 0-25 7-31 15 11-6 23-9 35-7-7 6-12 15-13 24 6-8 14-15 23-18 4 7 6 15 6 24 3-10 2-20-1-28 10 2 18 8 23 16-2-11-9-20-19-24 11-2 22 1 30 7-6-11-19-16-31-15 8-7 18-10 28-9-12-7-26-4-36 4l-11 3z"/>
+  </g>
+</svg>
+
+<header>
+  <div class="logo"><span class="script">Vice Ops</span><span class="block">HQ</span><small id="chan"></small></div>
+  <div class="gatepills" id="gates"></div>
+  <div class="hud">
+    <div title="Items waiting for YOUR approval (passed the gauntlet)"><div class="stars" id="stars"></div></div>
+    <div class="cash" title="Posted links"><span id="cash">$0</span><small>links posted</small></div>
+    <div class="clock" id="clock"></div>
+  </div>
+</header>
+
+<nav id="tabs">
+  <button data-t="missions" class="active">Missions</button>
+  <button data-t="garage">Garage <span class="badge" id="b-garage" hidden></span></button>
+  <button data-t="clips">Hot Clips</button>
+  <button data-t="intel">Intel</button>
+  <button data-t="crew">Crew</button>
+  <button data-t="payday">Payday <span class="badge" id="b-pay" hidden></span></button>
+  <button data-t="rules">Rulebook</button>
+</nav>
+
+<main>
+  <!-- MISSIONS -->
+  <section id="missions" class="active">
+    <h2>Mission <span class="accent">Board</span></h2>
+    <p class="sub">The orange buttons run pipeline steps here. Steps that need judgement (writing labels, studying thumbnails, the gauntlet judge) are Claude Code slash commands: click one to copy it, then paste it into Claude Code.</p>
+    <div class="grid" id="missionGrid"></div>
+    <h2 style="margin-top:28px">Safehouse <span class="accent">Check</span></h2>
+    <p class="sub">Tools and keys on this machine. Keys stay in <code>.env</code>; never paste them in chat.</p>
+    <div class="grid">
+      <div class="card"><h3>Tools</h3><div id="toolsList"></div><div class="row" style="margin-top:10px"><button class="btn" onclick="run('doctor')">Run doctor</button><button class="btn ghost" onclick="run('tests')">Run tests</button></div></div>
+      <div class="card"><h3>Keys in .env</h3><div id="keysList"></div><div class="row" style="margin-top:10px"><button class="btn ghost" onclick="doc('CONNECT.md')">What to click</button></div></div>
+      <div class="card"><h3>Connect accounts</h3><p>Prints a Composio link in the phone console. Open it and sign in.</p>
+        <div class="row"><button class="btn teal" onclick="run('connect',{toolkit:'youtube'})">YouTube</button><button class="btn teal" onclick="run('connect',{toolkit:'instagram'})">Instagram</button><button class="btn ghost" onclick="run('connect',{toolkit:'apify'})">Apify</button></div>
+        <p style="margin-top:10px">TikTok connects inside Upload-Post (see CONNECT.md).</p></div>
+    </div>
+  </section>
+
+  <!-- GARAGE -->
+  <section id="garage">
+    <h2>The <span class="accent">Garage</span></h2>
+    <p class="sub">Every episode, vertical, own video and thumbnail pack, by stage. Nothing posts without a gauntlet YES <b>and</b> your approval.</p>
+    <div class="lanes" id="lanes"></div>
+  </section>
+
+  <!-- CLIPS -->
+  <section id="clips">
+    <h2>Hot <span class="accent">Clips</span> <small class="sub" id="clipFile" style="font-family:var(--body);font-size:13px"></small></h2>
+    <p class="sub">Today's GTA 6 clips that are allowed, ranked by views per hour. Cutscenes, endings, exploits and clips we've already used are filtered out.</p>
+    <div class="row" style="margin-bottom:12px"><button class="btn" onclick="run('clips')">Pull today's clips</button>
+      <button class="btn ghost" onclick="run('episode_plan')">Plan episode from these</button>
+      <label class="row" style="gap:6px;color:var(--dim)">Verticals <input id="vtop" type="number" min="1" max="20" value="5" style="width:64px"></label>
+      <button class="btn ghost" onclick="run('verticals',{top:+document.getElementById('vtop').value})">Cut verticals</button></div>
+    <div class="tablewrap"><table><thead><tr><th>#</th><th>Views/hr</th><th>Source</th><th>Streamer</th><th>Clip</th><th>Len</th></tr></thead><tbody id="clipRows"></tbody></table></div>
+  </section>
+
+  <!-- INTEL -->
+  <section id="intel">
+    <h2>Street <span class="accent">Intel</span></h2>
+    <p class="sub">Videos that beat their channel's usual views by far (<code>outliers.csv</code>). This is what the thumbnails, titles and lengths are copied from.</p>
+    <div class="row" style="margin-bottom:12px"><button class="btn" onclick="run('outliers')">Refresh outliers</button><button class="btn ghost" onclick="run('thumbs_refs')">Download winning thumbnails</button>
+      <span class="cmd" onclick="copy('/thumbnails study')">/thumbnails study</span><span id="reports" class="row"></span></div>
+    <div class="tablewrap"><table><thead><tr><th></th><th>× usual</th><th>Video</th><th>Channel</th><th>Views</th><th>Format</th><th>Length</th></tr></thead><tbody id="outRows"></tbody></table></div>
+  </section>
+
+  <!-- CREW -->
+  <section id="crew">
+    <h2>The <span class="accent">Crew</span></h2>
+    <p class="sub">Channels we study, and the streamers we'd clip if they gave permission.</p>
+    <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr))">
+      <div class="card"><h3>Channel candidates <small style="color:var(--dim);font-family:var(--body);font-size:12px" id="apprCount"></small></h3>
+        <p>Prompt 2 waits for your OK. Tick the channels to study, then approve.</p>
+        <div class="row" style="margin-bottom:10px"><button class="btn ghost" onclick="run('channels_discover')">Find channels</button><button class="btn green" onclick="approveChannels()">Approve ticked</button></div>
+        <div class="tablewrap" style="max-height:440px;overflow:auto"><table><thead><tr><th></th><th>Channel</th><th>Subs</th><th>Last upload</th></tr></thead><tbody id="candRows"></tbody></table></div></div>
+      <div class="card"><h3>Need permission</h3>
+        <p>Top streamers in today's clips who are not in <code>streamers.yaml</code> as <code>campaign</code> or <code>written</code>. Ask them, or find their clipping campaign; until then their clips are never used.</p>
+        <div class="tablewrap"><table><thead><tr><th>Streamer</th><th>Views/hr</th><th>Clip</th></tr></thead><tbody id="permRows"></tbody></table></div></div>
+    </div>
+  </section>
+
+  <!-- PAYDAY -->
+  <section id="payday">
+    <h2><span class="accent">Payday</span></h2>
+    <p class="sub">Approved items post into open schedule slots. With dry run on, nothing actually posts; the console shows what would.</p>
+    <div class="row" style="margin-bottom:12px"><button class="btn green" onclick="run('publish_due')">Post due items</button><span id="sched" class="sub" style="margin:0"></span></div>
+    <h3 style="font-family:var(--head);font-weight:400;letter-spacing:1px">Clipping campaign submissions</h3>
+    <div class="tablewrap" style="margin-bottom:18px"><table><thead><tr><th>Item</th><th>Campaign</th><th>Platform</th><th>Post</th><th>Submit at</th><th>Status</th></tr></thead><tbody id="subRows"></tbody></table></div>
+    <h3 style="font-family:var(--head);font-weight:400;letter-spacing:1px">Posted links</h3>
+    <div class="tablewrap"><table><thead><tr><th>Item</th><th>Platform</th><th>Link</th><th>When</th></tr></thead><tbody id="postRows"></tbody></table></div>
+  </section>
+
+  <!-- RULES -->
+  <section id="rules">
+    <h2>The <span class="accent">Rulebook</span></h2>
+    <p class="sub">The gauntlet's verdicts, newest last. Faults that keep showing up should become standing rules.</p>
+    <div class="row" style="margin-bottom:12px"><button class="btn ghost" onclick="doc('RULES.md')">RULES.md</button><button class="btn ghost" onclick="doc('STATUS.md')">STATUS.md</button><button class="btn ghost" onclick="doc('THUMBNAILS.md')">THUMBNAILS.md</button><button class="btn ghost" onclick="doc('README.md')">README</button></div>
+    <div class="card"><pre id="vlog" style="white-space:pre-wrap;font:12px/1.6 var(--mono);margin:0;color:#e2d8f5"></pre></div>
+  </section>
+</main>
+
+<div id="phone" class="min">
+  <div class="bar" onclick="document.getElementById('phone').classList.toggle('min')"><i class="dot" id="pdot"></i><b>PHONE · CONSOLE</b><span id="pstat">idle — tap to open</span></div>
+  <pre id="pout">Nothing running. Missions you start show their output here.</pre>
+  <div class="jobs" id="pjobs"></div>
+</div>
+<div id="banner"><div><div class="big" id="bbig">MISSION PASSED</div><div class="small" id="bsmall"></div></div></div>
+<div id="modal" onclick="if(event.target===this)this.classList.remove('show')"><div class="box" id="mbox"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const TOKEN = "__TOKEN__";
+let S = null, curJob = null;
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const safeUrl = u => /^https?:\/\//i.test(u||"") ? esc(u) : "#";
+const fmtN = n => Number(n||0).toLocaleString();
+const fmtLen = s => { s = Math.round(+s||0); return s>=60 ? `${Math.floor(s/60)}:${String(s%60).padStart(2,"0")}` : `${s}s`; };
+const file = p => "/files/" + p.split("/").map(encodeURIComponent).join("/");
+
+const MISSIONS = [
+  {n:1,c:"#9b5cff",t:"Set up the operation",agent:"you + /setup",d:"Install tools, connect YouTube, Instagram, Apify and Upload-Post. Setup only — nothing posts.",run:[["doctor","Check setup"]],cmd:"/setup"},
+  {n:2,c:"#b46bff",t:"Find videos that blow up",agent:"scout",d:"Find active English GTA channels (you OK the list in Crew), then keep the videos that beat their channel's usual views.",run:[["channels_discover","Find channels"],["outliers","Refresh outliers"]],cmd:"/outliers"},
+  {n:3,c:"#d06bff",t:"Train on the best videos",agent:"thumbnail-studio",d:"Study what winning thumbnails and titles share, then make a few of each for every video.",run:[["thumbs_refs","Get winners"]],cmd:"/thumbnails study"},
+  {n:4,c:"#ff3fa4",t:"Grab the best clips",agent:"clip-hunter",d:"Today's most viewed GTA 6 clips from Twitch, Kick and TikTok, ranked by views per hour. Source links kept.",run:[["clips","Pull clips"]],cmd:"/clips"},
+  {n:5,c:"#ff4f7a",t:"Edit the episode",agent:"episode-editor",d:"No intro, opens on a top clip, cut to the length that wins, one-line labels and handles, every streamer credited.",run:[["episode_plan","Plan episode"]],cmd:"/episode"},
+  {n:6,c:"#ff6b3d",t:"Cut vertical clips",agent:"vertical-cutter",d:"Facecam on top, gameplay below, opens on the payoff, word-by-word captions clear of the app buttons.",run:[["verticals","Cut 5 verticals"]],cmd:"/verticals 5"},
+  {n:7,c:"#ff9a3d",t:"Make your own video",agent:"scriptwriter",d:"Script a guide, ranking or challenge from your own gameplay: payoff first, what to record, titles, description.",run:[],cmd:"/script the full gta 6 map | guide"},
+  {n:8,c:"#ffb347",t:"Check it before it posts",agent:"gauntlet",d:"A fresh agent that has never seen the work judges it YES or NO with faults. Fix and redo until YES. Pick an item in the Garage.",run:[],cmd:"/gauntlet <item id>"},
+  {n:9,c:"#6bff8a",t:"Post it and get paid",agent:"publisher",d:"Posts approved items on your schedule, logs every link, and lists the clipping campaigns to submit to.",run:[["publish_due","Post due items"]],cmd:"/publish"},
+  {n:"D",c:"#22e1d6",t:"Daily run",agent:"orchestrator",d:"Clips → episode → verticals → gauntlet → post what you approved → summary.",run:[],cmd:"/daily"},
+  {n:"W",c:"#22b8e1",t:"Weekly run",agent:"orchestrator",d:"New outliers and what changed, thumbnail study, own-channel stats, rule suggestions.",run:[["metrics","Own-channel metrics"]],cmd:"/weekly"},
+];
+
+function renderMissions(){
+  $("missionGrid").innerHTML = MISSIONS.map(m => `
+    <div class="card mission" style="--c:${m.c}"><div class="num">${m.n}</div>
+      <div class="agent">${esc(m.agent)}</div><h3>${esc(m.t)}</h3><p>${esc(m.d)}</p>
+      <div class="row">${m.run.map(([a,l]) => `<button class="btn" onclick="run('${a}')">${esc(l)}</button>`).join("")}
+      <span class="cmd" title="Copy for Claude Code" onclick="copy(this.textContent)">${esc(m.cmd)}</span></div></div>`).join("");
+}
+
+async function api(path, body){
+  const r = await fetch(path, body ? {method:"POST",headers:{"Content-Type":"application/json","X-Token":TOKEN},body:JSON.stringify(body)} : {});
+  const j = await r.json().catch(()=>({error:"bad response"}));
+  if (!r.ok) throw new Error(j.error || r.statusText);
+  return j;
+}
+function toast(msg){ const t=$("toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove("show"),3200); }
+function copy(txt){ navigator.clipboard?.writeText(txt).then(()=>toast(`Copied "${txt}" — paste it into Claude Code`), ()=>toast(txt)); }
+function banner(ok, small){ const b=$("banner"); $("bbig").textContent = ok ? "MISSION PASSED" : "MISSION FAILED"; $("bsmall").textContent = small||"";
+  b.classList.toggle("fail",!ok); b.classList.remove("show"); void b.offsetWidth; b.classList.add("show"); }
+
+async function run(action, args){
+  try{ const {job} = await api("/api/run",{action,args}); curJob = job; $("phone").classList.remove("min"); pollJob(job, true); }
+  catch(e){ toast("✗ "+e.message); }
+}
+async function pollJob(id, announce){
+  try{
+    const j = await api("/api/jobs/"+id);
+    if (curJob === id){ const o=$("pout"); const stick = o.scrollTop+o.clientHeight >= o.scrollHeight-20;
+      o.textContent = `$ ${j.cmd}\n\n${j.out || "…"}${j.done ? `\n[exit ${j.rc}]` : ""}`; if (stick) o.scrollTop = o.scrollHeight; }
+    $("pdot").classList.toggle("run", !j.done); $("pstat").textContent = j.done ? `${j.action} · done (exit ${j.rc})` : `${j.action} · running…`;
+    if (!j.done) return setTimeout(()=>pollJob(id, announce), 900);
+    if (announce) banner(j.rc===0, j.action.replace(/_/g," ").toUpperCase());
+    refresh();
+  }catch(e){ toast("✗ "+e.message); }
+}
+
+function render(){
+  $("chan").textContent = S.channel;
+  const g = S.gates;
+  $("gates").innerHTML = `<span class="pill ${g.require_gauntlet_pass?'on':'off'}">Gauntlet ${g.require_gauntlet_pass?'on':'OFF'}</span>
+    <span class="pill ${g.require_human_approval?'on':'off'}">Your approval ${g.require_human_approval?'on':'OFF'}</span>
+    <span class="pill ${g.dry_run?'dry':'on'}">${g.dry_run?'Dry run':'Live'}</span>`;
+  const waiting = S.counts.gauntlet_pass||0;
+  $("stars").innerHTML = Array.from({length:5},(_,i)=>`<div class="star ${i<waiting?'on':''}"></div>`).join("");
+  $("cash").textContent = "$" + fmtN(S.posted_links);
+  const bg=$("b-garage"); bg.hidden=!waiting; bg.textContent=waiting;
+  const todo = S.submissions.filter(s=>s.status==="to_submit").length; const bp=$("b-pay"); bp.hidden=!todo; bp.textContent=todo;
+
+  $("toolsList").innerHTML = Object.entries(S.tools).map(([k,v])=>`<div class="check"><i class="${v?'ok':''}"></i>${esc(k)}</div>`).join("");
+  const opt = new Set(["OPENAI_API_KEY","GEMINI_API_KEY","TWITCH_CLIENT_ID"]);
+  $("keysList").innerHTML = Object.entries(S.keys).map(([k,v])=>`<div class="check"><i class="${v?'ok':opt.has(k)?'opt':''}"></i><code>${esc(k)}</code>${opt.has(k)?' <span style="color:var(--dim)">optional</span>':''}</div>`).join("");
+
+  // garage
+  const lanes = [["gauntlet_pass","Waiting for you"],["draft","Needs the gauntlet"],["gauntlet_fail","Back to the shop"],["approved","Queued to post"],["posted","Posted"]];
+  $("lanes").innerHTML = lanes.map(([st,label]) => {
+    const its = S.items.filter(i=>i.status===st);
+    return `<div class="lane card"><h3><span>${label}</span><span class="tag s-${st}">${its.length}</span></h3>${its.length ? its.map(itemCard).join("") : `<div class="empty">Empty</div>`}</div>`;
+  }).join("");
+
+  // clips
+  $("clipFile").textContent = S.clips.file ? `· ${S.clips.file} · ${S.clips.skipped} skipped` : "";
+  $("clipRows").innerHTML = S.clips.ok.length ? S.clips.ok.map(c=>`<tr><td class="num-cell">${esc(c.rank)}</td><td class="num-cell">${fmtN(Math.round(c.vph))}</td>
+    <td class="src-${esc(c.source)}">${esc(c.source)}</td><td>@${esc(c.streamer)}</td><td><a href="${safeUrl(c.url)}" target="_blank" rel="noopener">${esc(c.title||"(untitled)")}</a></td><td class="num-cell">${fmtLen(c.duration_s)}</td></tr>`).join("")
+    : `<tr><td colspan="6"><div class="empty">No usable clips yet. Pull today's clips, and clear some streamers in <code>streamers.yaml</code>.</div></td></tr>`;
+
+  // intel
+  $("reports").innerHTML = S.reports.slice(0,3).map(r=>`<button class="btn ghost" onclick="doc('${esc(r)}')">${esc(r.replace('.md',''))}</button>`).join("");
+  $("outRows").innerHTML = S.outliers.length ? S.outliers.map(o=>`<tr><td>${o.video_id?`<img class="refimg" loading="lazy" src="https://i.ytimg.com/vi/${encodeURIComponent(o.video_id)}/mqdefault.jpg" alt="">`:""}</td>
+    <td><span class="ratio">${esc(o.ratio)}×</span></td><td><a href="${safeUrl(o.url)}" target="_blank" rel="noopener">${esc(o.title)}</a></td><td>${esc(o.channel)}</td>
+    <td class="num-cell">${fmtN(o.views)}</td><td><span class="tag s-draft">${esc(o.format)}</span></td><td class="num-cell">${fmtLen(o.duration_s)}</td></tr>`).join("")
+    : `<tr><td colspan="7"><div class="empty">No outliers yet. Approve channels in Crew, then refresh outliers.</div></td></tr>`;
+
+  // crew
+  $("apprCount").textContent = `· ${S.approved_channels} approved`;
+  $("candRows").innerHTML = S.candidates.length ? S.candidates.map(c=>`<tr><td><input type="checkbox" class="cand" value="${esc(c.url)}" ${c.approved?'checked disabled':''}></td>
+    <td><a href="${safeUrl(c.url)}" target="_blank" rel="noopener">${esc(c.channel)}</a><div style="color:var(--dim);font-size:11px">${esc((c.sample_titles||"").slice(0,90))}</div></td>
+    <td class="num-cell">${fmtN(c.subscribers)}</td><td class="num-cell">${esc(c.days_since_upload)}d</td></tr>`).join("")
+    : `<tr><td colspan="4"><div class="empty">Click "Find channels" first.</div></td></tr>`;
+  $("permRows").innerHTML = S.clips.needs_permission.length ? S.clips.needs_permission.map(c=>`<tr><td>@${esc(c.streamer)} <span class="src-${esc(c.source)}">${esc(c.source)}</span></td>
+    <td class="num-cell">${fmtN(Math.round(c.vph))}</td><td><a href="${safeUrl(c.url)}" target="_blank" rel="noopener">${esc((c.title||"clip").slice(0,50))}</a></td></tr>`).join("")
+    : `<tr><td colspan="3"><div class="empty">Nobody waiting.</div></td></tr>`;
+
+  // payday
+  const sc = S.schedule; $("sched").textContent = `Slots (${sc.timezone}): episode ${sc.episode.join(", ")} · own video ${sc.own_video.join(", ")} · verticals ${sc.vertical.join(", ")}`;
+  $("subRows").innerHTML = S.submissions.length ? S.submissions.map(s=>`<tr><td><code>${esc(s.item)}</code></td><td>${esc(s.campaign)} · @${esc(s.streamer)}</td><td>${esc(s.platform)}</td>
+    <td><a href="${safeUrl(s.post_url)}" target="_blank" rel="noopener">post</a></td><td><a href="${safeUrl(s.submit_at)}" target="_blank" rel="noopener">submit ↗</a></td>
+    <td><select onchange="setSub(${+s.row},this.value)">${["to_submit","submitted","paid","rejected"].map(v=>`<option ${v===s.status?'selected':''}>${v}</option>`).join("")}</select></td></tr>`).join("")
+    : `<tr><td colspan="6"><div class="empty">No campaign submissions yet.</div></td></tr>`;
+  const posts = S.items.flatMap(i=>Object.entries(i.posts||{}).map(([p,v])=>({id:i.id,p,...v}))).sort((a,b)=>b.at.localeCompare(a.at));
+  $("postRows").innerHTML = posts.length ? posts.map(p=>`<tr><td><code>${esc(p.id)}</code></td><td>${esc(p.p)}</td><td>${/^https?:/.test(p.url)?`<a href="${safeUrl(p.url)}" target="_blank" rel="noopener">${esc(p.url)}</a>`:esc(p.url)}</td><td>${esc(p.at.slice(0,16).replace("T"," "))}</td></tr>`).join("")
+    : `<tr><td colspan="4"><div class="empty">Nothing posted yet.</div></td></tr>`;
+
+  $("vlog").textContent = S.verdict_log.length ? S.verdict_log.join("\n") : "No verdicts yet. Run /gauntlet <item id> in Claude Code.";
+  $("pjobs").innerHTML = S.jobs.map(j=>`<button class="${j.id===curJob?'sel':''}" onclick="curJob='${j.id}';pollJob('${j.id}',false)">${j.done?(j.rc===0?'✓':'✗'):'…'} ${esc(j.action)}</button>`).join("");
+}
+
+function itemCard(i){
+  const vert = i.kind==="vertical";
+  const pic = i.thumbs?.[0] ? `<img class="thumb" src="${file(i.thumbs[0])}" alt="">`
+    : i.video ? `<video class="thumb ${vert?'v':''}" src="${file(i.video)}#t=0.1" preload="metadata" muted playsinline></video>`
+    : i.review ? `<img class="thumb" src="${file(i.review)}" alt="">` : "";
+  const v = i.last_verdict;
+  const faults = v && v.verdict==="NO" && v.faults.length ? `<ul class="faults">${v.faults.slice(0,4).map(f=>`<li>${esc(f)}</li>`).join("")}</ul>` : "";
+  const posted = Object.entries(i.posts||{}).map(([p,x])=>/^https?:/.test(x.url)?`<a href="${safeUrl(x.url)}" target="_blank" rel="noopener">${esc(p)}</a>`:esc(p)).join(" · ");
+  const titles = i.titles?.length ? `<div class="meta" style="margin-top:4px">${i.titles.slice(0,3).map(esc).join("<br>")}</div>` : "";
+  return `<div class="item">${pic}
+    <div class="t">${esc(i.title||i.id)}</div>
+    <div class="meta"><span class="tag s-${esc(i.status)}">${esc(i.kind)}</span> <code>${esc(i.id)}</code>${i.duration?` · ${fmtLen(i.duration)}`:""}${i.tries?` · ${i.tries} gauntlet tr${i.tries>1?'ies':'y'}`:""}</div>
+    ${titles}${faults}${posted?`<div class="meta" style="margin-top:6px">Posted: ${posted}</div>`:""}
+    <div class="row" style="margin-top:8px">
+      ${i.video?`<button class="btn ghost" onclick="preview('${esc(i.video)}',true)">▶ Watch</button>`:""}
+      ${i.thumbs?.length>1?`<button class="btn ghost" onclick='thumbs(${esc(JSON.stringify(i.thumbs))})'>Thumbs</button>`:""}
+      ${i.review?`<button class="btn ghost" onclick="preview('${esc(i.review)}',false)">Review sheet</button>`:""}
+      ${["draft","gauntlet_fail"].includes(i.status)?`<button class="btn ghost" onclick="run('gauntlet',{item:'${esc(i.id)}'})">Pack for judge</button><span class="cmd" onclick="copy(this.textContent)">/gauntlet ${esc(i.id)}</span>`:""}
+      ${i.status==="gauntlet_pass"?`<button class="btn green" onclick="approve('${esc(i.id)}')">✓ Approve</button>`:""}
+      ${i.status==="approved"?`<button class="btn" onclick="run('publish_item',{item:'${esc(i.id)}'})">Post now</button>`:""}
+    </div></div>`;
+}
+
+function preview(p, isVideo){
+  $("mbox").innerHTML = isVideo ? `<video src="${file(p)}" controls autoplay playsinline></video>` : `<img src="${file(p)}" alt="">`;
+  $("modal").classList.add("show");
+}
+function thumbs(list){ $("mbox").innerHTML = `<div class="grid">${list.map(t=>`<img src="${file(t)}" alt="">`).join("")}</div>`; $("modal").classList.add("show"); }
+async function doc(name){
+  const r = await fetch("/doc/"+encodeURIComponent(name)); const t = r.ok ? await r.text() : "Not found";
+  $("mbox").innerHTML = `<pre></pre>`; $("mbox").firstChild.textContent = t; $("modal").classList.add("show");
+}
+async function approve(id){
+  if (!confirm(`Approve ${id} for posting?\n\nYou're confirming you watched it and want it on your channel.`)) return;
+  try{ await api("/api/approve",{item:id}); banner(true,"APPROVED"); refresh(); }catch(e){ toast("✗ "+e.message); }
+}
+async function approveChannels(){
+  const urls = [...document.querySelectorAll(".cand:checked:not(:disabled)")].map(c=>c.value);
+  if (!urls.length) return toast("Tick at least one channel");
+  try{ const r = await api("/api/channels/approve",{urls}); toast(`Approved ${r.approved} channels`); refresh(); }catch(e){ toast("✗ "+e.message); }
+}
+async function setSub(row,status){ try{ await api("/api/submission",{row,status}); refresh(); }catch(e){ toast("✗ "+e.message); } }
+
+async function refresh(){ try{ S = await api("/api/state"); render(); }catch(e){ toast("Can't reach HQ: "+e.message); } }
+document.querySelectorAll("#tabs button").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll("#tabs button,main section").forEach(x=>x.classList.remove("active"));
+  b.classList.add("active"); $(b.dataset.t).classList.add("active"); try{localStorage.setItem("tab",b.dataset.t)}catch(e){}
+});
+try{ const t=localStorage.getItem("tab"); if(t) document.querySelector(`#tabs button[data-t="${t}"]`)?.click(); }catch(e){}
+document.addEventListener("keydown",e=>{ if(e.key==="Escape") $("modal").classList.remove("show"); });
+setInterval(()=>{ $("clock").textContent = new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"}); }, 1000);
+renderMissions(); refresh(); setInterval(refresh, 15000);
+</script>
+</body>
+</html>

@@ -207,6 +207,11 @@ def cmd_status(_):
     print((ROOT / "STATUS.md").read_text())
 
 
+def cmd_dashboard(a):
+    from . import dashboard
+    dashboard.serve(a.port)
+
+
 def main(argv=None):
     ensure_dirs()
     p = argparse.ArgumentParser(prog="pipeline")
@@ -237,6 +242,7 @@ def main(argv=None):
     s.add_argument("--platform", action="append"); s.add_argument("--dry-run", action="store_true", default=None); s.set_defaults(f=cmd_publish)
     sub.add_parser("metrics").set_defaults(f=cmd_metrics)
     sub.add_parser("status").set_defaults(f=cmd_status)
+    s = sub.add_parser("dashboard"); s.add_argument("--port", type=int, default=8787); s.set_defaults(f=cmd_dashboard)
     a = p.parse_args(argv)
     return a.f(a) or 0
 

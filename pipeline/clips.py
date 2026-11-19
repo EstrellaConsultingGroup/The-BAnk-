@@ -150,11 +150,14 @@ def run_daily() -> tuple[list[dict], Path]:
             pulled += got
         except (Exception, SystemExit) as e:  # one source failing must not kill the day
             print(f"{name}: FAILED — {e}")
+    stamp = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    path = HISTORY / f"clips-{stamp}.csv"
+    if not pulled and path.exists():  # every source failed: keep today's earlier pull instead of wiping it
+        print(f"no clips pulled; keeping existing {path.name}")
+        return [r for r in read_csv(path) if r["status"] == "ok"], path
     ranked = rank(pulled)
     keep = [r for r in ranked if r["status"] == "ok"][: c["keep_top"]]
     rest = [r for r in ranked if r["status"] != "ok"]
-    stamp = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-    path = HISTORY / f"clips-{stamp}.csv"
     write_csv(path, keep + rest, FIELDS)
     return keep, path
 
